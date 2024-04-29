@@ -1,0 +1,28 @@
+version: '3.8'
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+      - "5005:5005"
+    environment:
+      - SPRING_DATA_MONGODB_URI=mongodb://mongoadmin:secret@mongodb:27017/mydatabase?authSource=admin
+    depends_on:
+      - mongodb
+
+
+  mongodb:
+    image: mongo
+    ports:
+      - "27017:27017"
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=mongoadmin
+      - MONGO_INITDB_ROOT_PASSWORD=secret
+    volumes:
+      - mongodb_data:/data/db
+    command: ["mongod", "--auth", "--logpath", "/dev/null"]
+
+volumes:
+  mongodb_data:
